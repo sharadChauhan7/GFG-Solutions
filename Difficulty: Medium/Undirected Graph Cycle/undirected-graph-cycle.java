@@ -38,7 +38,6 @@ class Solution {
         boolean isVisited [] = new boolean[graph.size()];
         for(int i=0;i<isVisited.length;i++){
             if(!isVisited[i]){
-                // System.out.println(i);
                 if(detectCycleUtil(graph,isVisited,i,-1)){
                     return true;
                 }
@@ -47,16 +46,20 @@ class Solution {
         return false;
     }
      public boolean detectCycleUtil(ArrayList<ArrayList<Integer>> graph,boolean [] isVisited,int si,int par){
-            isVisited[si] = true;
-            
-            for(int i=0;i<graph.get(si).size();i++){
-                ArrayList<Integer> n=graph.get(si);
-                if(isVisited[n.get(i)] && n.get(i) != par){
-                    return true;
-                }
-                else if(!isVisited[n.get(i)]){
-                    if(detectCycleUtil(graph,isVisited,n.get(i),si)){
+            Queue<int []> q = new LinkedList<>();
+            q.add(new int [] {si,par} );
+            while(!q.isEmpty()){
+                int []curr = q.remove();
+                isVisited[curr[0]] = true;
+                for(int i=0;i<graph.get(curr[0]).size();i++){
+                    ArrayList<Integer> n=graph.get(curr[0]);
+                    if(isVisited[n.get(i)] && n.get(i) != curr[1]){
                         return true;
+                    }
+                    else if(!isVisited[n.get(i)]){
+                        
+                            q.add(new int []{n.get(i),curr[0]});
+                            
                     }
                 }
             }
