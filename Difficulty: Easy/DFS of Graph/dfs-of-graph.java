@@ -25,6 +25,8 @@ class GFG {
             ArrayList<Integer> ans = obj.dfsOfGraph(adj);
             for (int i = 0; i < ans.size(); i++) System.out.print(ans.get(i) + " ");
             System.out.println();
+
+            System.out.println("~");
         }
     }
 }
@@ -34,24 +36,23 @@ class GFG {
 
 class Solution {
     // Function to return a list containing the DFS traversal of the graph.
-    public ArrayList<Integer> dfsOfGraph(ArrayList<ArrayList<Integer>> graph) {
+    public ArrayList<Integer> dfsOfGraph(ArrayList<ArrayList<Integer>> adj) {
         // Code here
-        boolean isVisited [] = new boolean[graph.size()];
-        ArrayList<Integer> ans = new ArrayList<Integer>();
-        helper(graph,isVisited,0,ans);
+        boolean isV [] = new boolean [adj.size()];
+        ArrayList<Integer> ans = new ArrayList<>();
+        dfs(adj,ans,isV,0);
         return ans;
     }
-    public void helper(ArrayList<ArrayList<Integer>> graph,boolean isVisited [],int starting,ArrayList<Integer> ans){
-        if(!isVisited[starting]){
-            isVisited[starting]=true;
-            ans.add(starting);
-            for(int i=0;i<graph.get(starting).size();i++){
-                ArrayList<Integer> n = graph.get(starting);
-                if(!isVisited[n.get(i)]){
-                    helper(graph,isVisited,n.get(i),ans);
-                }
+    
+    public void dfs(ArrayList<ArrayList<Integer>> adj, ArrayList<Integer> ans,boolean isV [],int start){
+        isV[start] = true;
+        ans.add(start);
+        for(int i=0;i<adj.get(start).size();i++){
+            if(!isV[adj.get(start).get(i)]){
+                dfs(adj,ans,isV,adj.get(start).get(i));
             }
         }
         return;
     }
+    
 }
