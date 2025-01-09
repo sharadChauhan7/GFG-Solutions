@@ -1,11 +1,11 @@
 //{ Driver Code Starts
-import java.util.*;
-import java.lang.*;
 import java.io.*;
+import java.lang.*;
+import java.util.*;
+
 class GFG {
     public static void main(String[] args) throws IOException {
-        BufferedReader br =
-            new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine().trim());
         while (T-- > 0) {
             String[] s = br.readLine().trim().split(" ");
@@ -21,11 +21,13 @@ class GFG {
                 adj.get(v).add(u);
             }
             Solution obj = new Solution();
-            boolean ans = obj.isCycle(V, adj);
+            boolean ans = obj.isCycle(adj);
             if (ans)
                 System.out.println("1");
             else
                 System.out.println("0");
+
+            System.out.println("~");
         }
     }
 }
@@ -33,44 +35,50 @@ class GFG {
 
 
 class Solution {
+    class Node{
+        int num;
+        int parent;
+        
+        Node(int num,int parent){
+            this.num = num;
+            this.parent = parent;
+        }
+    }
+    // Function to detect cycle in an undirected graph.
+    public boolean isCycle(ArrayList<ArrayList<Integer>> adj) {
+        // Code here
+        Queue <Node> q = new LinkedList<>();
+        boolean isV [] = new boolean [adj.size()];
+        int n = adj.size();
+        
+        for(int i=0;i<n;i++){
+            if(!isV[i]){
+                q.add(new Node(i,-1));
+                if(isCycleUtil(q,isV,adj))return true;
+            }
+        }
+        return false;
+        
+    }
     
-    public boolean detectCycle(ArrayList<ArrayList<Integer>> graph,int V){
-        boolean isVisited [] = new boolean[graph.size()];
-        for(int i=0;i<isVisited.length;i++){
-            if(!isVisited[i]){
-                if(detectCycleUtil(graph,isVisited,i,-1)){
+    public boolean isCycleUtil(Queue <Node> q,boolean isV [], ArrayList<ArrayList<Integer>> adj){
+        while(!q.isEmpty()){
+            Node curr = q.remove();
+            // System.out.println(curr.num+" "+curr.parent);
+            isV[curr.num] = true;
+            for(int i=0;i<adj.get(curr.num).size();i++){
+                int neigh = adj.get(curr.num).get(i);
+                // System.out.println(neigh);
+                if(isV[neigh] && neigh != curr.parent){
                     return true;
+                }
+                else{
+                    if(!isV[neigh]){
+                        q.add(new Node(neigh,curr.num));
+                    }
                 }
             }
         }
         return false;
-    }
-     public boolean detectCycleUtil(ArrayList<ArrayList<Integer>> graph,boolean [] isVisited,int si,int par){
-            Queue<int []> q = new LinkedList<>();
-            q.add(new int [] {si,par} );
-            while(!q.isEmpty()){
-                int []curr = q.remove();
-                isVisited[curr[0]] = true;
-                for(int i=0;i<graph.get(curr[0]).size();i++){
-                    ArrayList<Integer> n=graph.get(curr[0]);
-                    if(isVisited[n.get(i)] && n.get(i) != curr[1]){
-                        return true;
-                    }
-                    else if(!isVisited[n.get(i)]){
-                        
-                            q.add(new int []{n.get(i),curr[0]});
-                            
-                    }
-                }
-            }
-         return false;
-     }
-    
-    
-    // Function to detect cycle in an undirected graph.
-    public boolean isCycle(int V, ArrayList<ArrayList<Integer>> adj) {
-        // Code here
-        // System.out.println(adj);
-        return detectCycle(adj,V);
     }
 }
