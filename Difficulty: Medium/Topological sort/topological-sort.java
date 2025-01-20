@@ -59,28 +59,42 @@ class Solution {
     static ArrayList<Integer> topologicalSort(ArrayList<ArrayList<Integer>> adj) {
         // Your code here
         boolean isV[] = new boolean [adj.size()];
-        Stack<Integer> map = new Stack<>();
+        Queue<Integer> q = new LinkedList<>();
+        int inDegree[] = new int [adj.size()];
+        
         for(int i=0;i<adj.size();i++){
-            if(!isV[i]){
-                tsUtil(i,isV,adj,map);
+            for(int j =0;j<adj.get(i).size();j++){
+                int neigh = adj.get(i).get(j);
+                inDegree[neigh]++;
             }
         }
         ArrayList<Integer> ans = new ArrayList<>();
-        while(!map.isEmpty()){
-            ans.add(map.pop());
+        
+
+        for(int i=0;i<adj.size();i++){
+           if(inDegree[i]==0){
+               q.add(i);
+               ans.add(i);
+           }
         }
+            tsUtil(adj,q,isV,inDegree,ans);
+        
         return ans;
     }
-    static void tsUtil(int curr, boolean[] isV,ArrayList<ArrayList<Integer>> adj,Stack<Integer>map){
-        if(isV[curr]){
-            return;
-        }
+    static void tsUtil(ArrayList<ArrayList<Integer>> adj,Queue<Integer>q,boolean isV[],int inDegree[],ArrayList<Integer>ans){
         
-        isV[curr] = true;
-        for(int i=0;i<adj.get(curr).size();i++){
-            tsUtil(adj.get(curr).get(i),isV,adj,map);
+        while(!q.isEmpty()){
+            int curr = q.remove();
+        
+            for(int i=0;i<adj.get(curr).size();i++){
+                int neigh = adj.get(curr).get(i);
+                inDegree[neigh]--;
+                if(inDegree[neigh]==0){
+                    q.add(neigh);
+                    ans.add(neigh);
+                }
+            }
         }
-        map.push(curr);
         return;
     }
 }
