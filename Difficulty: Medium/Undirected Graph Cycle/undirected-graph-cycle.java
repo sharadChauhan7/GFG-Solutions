@@ -35,47 +35,35 @@ class GFG {
 
 
 class Solution {
-    class Node{
-        int num;
-        int parent;
-        
-        Node(int num,int parent){
-            this.num = num;
-            this.parent = parent;
-        }
-    }
     // Function to detect cycle in an undirected graph.
     public boolean isCycle(ArrayList<ArrayList<Integer>> adj) {
         // Code here
-        Queue <Node> q = new LinkedList<>();
-        boolean isV [] = new boolean [adj.size()];
-        int n = adj.size();
+        int len = adj.size();
+        boolean isV[] = new boolean [len];
+        Queue<int[]> que = new LinkedList<>();
         
-        for(int i=0;i<n;i++){
+        for(int i=0;i<len;i++){
             if(!isV[i]){
-                q.add(new Node(i,-1));
-                if(isCycleUtil(q,isV,adj))return true;
+                que.add(new int []{i,-1});
+                if(cyc(adj,que,isV)){
+                    return true;
+                }
             }
         }
         return false;
-        
     }
-    
-    public boolean isCycleUtil(Queue <Node> q,boolean isV [], ArrayList<ArrayList<Integer>> adj){
-        while(!q.isEmpty()){
-            Node curr = q.remove();
-            // System.out.println(curr.num+" "+curr.parent);
-            isV[curr.num] = true;
-            for(int i=0;i<adj.get(curr.num).size();i++){
-                int neigh = adj.get(curr.num).get(i);
-                // System.out.println(neigh);
-                if(isV[neigh] && neigh != curr.parent){
+    public boolean cyc(ArrayList<ArrayList<Integer>> adj,Queue<int[]> que,boolean [] isV){
+        while(!que.isEmpty()){
+            int[] curr = que.remove();
+            isV[curr[0]] = true;
+            
+            for(int i=0;i<adj.get(curr[0]).size();i++){
+                int neigh = adj.get(curr[0]).get(i);
+                if(isV[neigh] && neigh!=curr[1]){
                     return true;
                 }
-                else{
-                    if(!isV[neigh]){
-                        q.add(new Node(neigh,curr.num));
-                    }
+                if(!isV[neigh]){
+                    que.add(new int[]{neigh,curr[0]});
                 }
             }
         }
