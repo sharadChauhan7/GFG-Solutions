@@ -18,7 +18,7 @@ class DriverClass {
                 int v = sc.nextInt();
                 list.get(u).add(v);
             }
-            if (new Solution().isCyclic(V, list) == true)
+            if (new Solution().isCyclic(list) == true)
                 System.out.println("1");
             else
                 System.out.println("0");
@@ -34,40 +34,35 @@ class DriverClass {
 
 class Solution {
     // Function to detect cycle in a directed graph.
-    public boolean isCyclic(int V, ArrayList<ArrayList<Integer>> adj) {
+    public boolean isCyclic(ArrayList<ArrayList<Integer>> adj) {
         // code here
-        boolean isV [] = new boolean [V];
-        boolean isPathV[] = new boolean[V];
+        int len = adj.size();
+        boolean isV[] = new boolean [len];
+        boolean isPV[] = new boolean [len];
         
-        for(int i=0;i<V;i++){
+        for(int i=0;i<len;i++){
             if(!isV[i]){
-                if(isCycleUtil(i,isV,isPathV,adj)){
+                if(dfs(adj,i,isV,isPV)){
                     return true;
                 }
             }
         }
         return false;
     }
-    
-    public boolean isCycleUtil(int curr,boolean[] isV,boolean[]isPathV,ArrayList<ArrayList<Integer>> adj){
-        // Base Case
-        if(isV[curr] && isPathV[curr]){
-            return true;
-        }
-        if(isV[curr] && !isPathV[curr]){
-            return false;
-        }
+    public boolean dfs(ArrayList<ArrayList<Integer>> adj,int curr,boolean isV[],boolean isPV[]){
+        isV[curr]=true;
+        isPV[curr]=true;
         
-        isV[curr] = true;
-        isPathV[curr] = true;
-        
-        for(int i =0;i<adj.get(curr).size();i++){
-             if(isCycleUtil(adj.get(curr).get(i),isV,isPathV,adj)){
-                 return true;
-             }
+        for(int i=0;i<adj.get(curr).size();i++){
+            int neigh = adj.get(curr).get(i);
+            if(isV[neigh] && isPV[neigh]){
+                return true;
+            }
+            else{
+                if(dfs(adj,neigh,isV,isPV))return true;
+            }
         }
-        isPathV[curr] = false;
+        isPV[curr]=false;
         return false;
     }
-    
 }
