@@ -43,41 +43,31 @@ class GFG {
 
 class Solution {
     // Function to find the shortest path from a source node to all other nodes
-    class Info {
-        int node;
-        int dis;
-        
-        Info(int node,int dis){
-            this.node = node;
-            this.dis = dis;
-        }
-    }
     public int[] shortestPath(ArrayList<ArrayList<Integer>> adj, int src) {
+        // code here
+        Queue<int[]> q = new LinkedList<>();
+        int len = adj.size();
+        int ans [] = new int [len];
         
-        Queue<Info> q = new LinkedList<>();
-        int [] ans = new int [adj.size()];
-        for(int i=0;i<ans.length;i++){
-            ans[i] = Integer.MAX_VALUE;
-        }
-        q.add(new Info(src,0));
+        Arrays.fill(ans,Integer.MAX_VALUE);
+        
+        q.add(new int[]{src,0});
         while(!q.isEmpty()){
-            Info curr = q.remove();
+            int curr[]= q.remove();
+            ans[curr[0]] = Math.min(curr[1],ans[curr[0]]);
             
-            ans[curr.node] = curr.dis;
-            for(int i=0;i<adj.get(curr.node).size();i++){
-                int neigh = adj.get(curr.node).get(i);
-                if(curr.dis+1<ans[neigh]){
-                    ans[neigh] = curr.dis+1;
-                    q.add(new Info(neigh,curr.dis+1));
+            for(int i=0;i<adj.get(curr[0]).size();i++){
+                int neigh = adj.get(curr[0]).get(i);
+                if(curr[1]+1<ans[neigh]){
+                    q.add(new int[]{neigh,curr[1]+1});
                 }
             }
         }
-        for(int i=0;i<ans.length;i++){
+        for(int i=0;i<len;i++){
             if(ans[i]==Integer.MAX_VALUE){
                 ans[i]=-1;
             }
         }
-        
         return ans;
     }
 }
